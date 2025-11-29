@@ -116,11 +116,8 @@ The demo showcases:
     python main.py
     ```
     ```
+    ```
     Access the platform at `http://127.0.0.1:7870`.
-
-### **Deployment**
-Want to run this in the cloud?
-👉 **[Read the Deployment Guide](DEPLOYMENT.md)** for instructions on hosting on Hugging Face Spaces or Google Cloud Run.
 
 ---
 
