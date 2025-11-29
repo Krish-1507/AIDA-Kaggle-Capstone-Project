@@ -55,6 +55,23 @@ warnings.filterwarnings('ignore')
 # 🧠 UNIVERSAL API CONNECTIVITY (DEBUGGED)
 # ============================================================================
 
+# --- OBSERVABILITY LAYER ---
+class AgentLogger:
+    """Tracks agent thoughts and actions for observability."""
+    def __init__(self):
+        self.logs = []
+    
+    def log(self, agent_name, message):
+        timestamp = datetime.datetime.now().strftime("%H:%M:%S")
+        entry = f"[{timestamp}] 🤖 **{agent_name}**: {message}"
+        self.logs.append(entry)
+        return "\n\n".join(self.logs)
+    
+    def get_logs(self):
+        return "\n\n".join(self.logs)
+
+logger = AgentLogger()
+
 def configure_api(user_api_key):
     try:
         import google.generativeai as genai
@@ -66,6 +83,8 @@ def configure_api(user_api_key):
     
     clean_key = user_api_key.strip()
     genai.configure(api_key=clean_key)
+    
+    logger.log("System", "Attempting to configure API connection...")
     
     try:
         # Dynamic Model Discovery
@@ -79,6 +98,7 @@ def configure_api(user_api_key):
         ]
         
         if not supported_models:
+            logger.log("System", "❌ No supported models found.")
             return None, "No models found that support content generation."
             
         # Priority list for model selection
@@ -112,6 +132,7 @@ def configure_api(user_api_key):
             selected_model_name = supported_models[0].name
             
         print(f"Selected Model: {selected_model_name}")
+        logger.log("System", f"✅ Connected to model: {selected_model_name}")
         
         # Verify connection
         llm = genai.GenerativeModel(selected_model_name)
@@ -120,6 +141,7 @@ def configure_api(user_api_key):
         return llm, None
         
     except Exception as e:
+        logger.log("System", f"❌ Connection Error: {str(e)}")
         return None, f"Connection Failed: {str(e)}"
 
 # ============================================================================
@@ -136,6 +158,8 @@ class SelfHealingAgent:
         import io
         import sys
         
+        logger.log("Healer Agent", f"Executing code for: {context}")
+        
         for attempt in range(self.max_retries):
             try:
                 # Create a capture buffer
@@ -149,12 +173,16 @@ class SelfHealingAgent:
                 
                 # Get result
                 result = local_vars.get('result', "Execution successful (No return value)")
+                logger.log("Healer Agent", f"✅ Execution successful on attempt {attempt+1}")
                 return str(result), code, None
                 
             except Exception as e:
+                logger.log("Healer Agent", f"⚠️ Error on attempt {attempt+1}: {str(e)}")
                 if attempt < self.max_retries - 1:
+                    logger.log("Healer Agent", "🩹 Attempting to heal code...")
                     code = self.heal_code(code, str(e), context)
                 else:
+                    logger.log("Healer Agent", "❌ Max retries exceeded.")
                     return None, code, str(e)
         return None, code, "Max retries exceeded"
     
@@ -168,16 +196,21 @@ class CouncilOfAgents:
         self.llm = llm
         
     def debate_and_decide(self, topic, context):
+        logger.log("Council", f"Starting debate on: {topic}")
+        
         try:
             analyst = self.llm.generate_content(f"Role: Data Analyst (Optimist). Topic: {topic}. Context: {context}. Provide 3 opportunities.").text
+            logger.log("Analyst Agent", "Generated optimistic analysis.")
         except Exception as e: analyst = f"Analyst Unavailable: {str(e)}"
         
         try:
             skeptic = self.llm.generate_content(f"Role: Risk Officer (Critic). Topic: {topic}. Context: {context}. Find flaws and risks.").text
+            logger.log("Skeptic Agent", "Generated risk assessment.")
         except Exception as e: skeptic = f"Skeptic Unavailable: {str(e)}"
         
         try:
             decision = self.llm.generate_content(f"Role: CEO. Topic: {topic}. Analyst: {analyst}. Skeptic: {skeptic}. Make a strategic decision.").text
+            logger.log("CEO Agent", "Synthesized final decision.")
         except Exception as e: decision = f"CEO Unavailable: {str(e)}"
         
         return analyst, skeptic, decision
@@ -188,6 +221,7 @@ class HypothesisAgent:
         self.llm = llm
 
     def discover_and_test(self, df):
+        logger.log("Hypothesis Agent", "Scanning dataset for patterns...")
         report = "### Auto-Feature Discovery & Hypothesis Engine\n\n"
         
         # 1. Scan
@@ -215,6 +249,7 @@ class HypothesisAgent:
                     status = "Supported" if p < 0.05 else "Rejected"
                     report += f"  - **Test:** Pearson Correlation (r={stat:.2f}, p={p:.4f})\n"
                     report += f"  - **Result:** {status}\n\n"
+                    logger.log("Hypothesis Agent", f"Tested correlation: {col1} vs {col2} -> {status}")
                 except: report += "  - **Test:** Failed (Insufficient data)\n\n"
 
         # H2: Group Differences (Categorical vs Numeric) - ANOVA
@@ -231,6 +266,7 @@ class HypothesisAgent:
                         status = "Supported" if p < 0.05 else "Rejected"
                         report += f"  - **Test:** One-way ANOVA (F={stat:.2f}, p={p:.4f})\n"
                         report += f"  - **Result:** {status}\n\n"
+                        logger.log("Hypothesis Agent", f"Tested ANOVA: {num} by {cat} -> {status}")
                 except: report += "  - **Test:** Failed (Insufficient data)\n\n"
 
         # H3: Independence (Categorical vs Categorical) - Chi-Square
@@ -244,6 +280,7 @@ class HypothesisAgent:
                 status = "Supported" if p < 0.05 else "Rejected"
                 report += f"  - **Test:** Chi-Square Test (Chi2={stat:.2f}, p={p:.4f})\n"
                 report += f"  - **Result:** {status}\n\n"
+                logger.log("Hypothesis Agent", f"Tested Chi-Square: {cat1} vs {cat2} -> {status}")
             except: report += "  - **Test:** Failed (Insufficient data)\n\n"
 
         # H4: Seasonality (Time Series)
@@ -261,6 +298,7 @@ class HypothesisAgent:
                     status = "Supported" if abs(lag1) > 0.5 else "Rejected"
                     report += f"  - **Test:** Autocorrelation (Lag-1 = {lag1:.2f})\n"
                     report += f"  - **Result:** {status}\n\n"
+                    logger.log("Hypothesis Agent", f"Tested Seasonality: {target} over {col} -> {status}")
                     break # Only test one date col
             except: continue
 
@@ -270,6 +308,7 @@ class HypothesisAgent:
             prompt = f"Based on these stats, generate 3 advanced data science insights:\n{df.describe().to_string()}"
             insights = self.llm.generate_content(prompt).text
             report += insights
+            logger.log("Hypothesis Agent", "Generated AI insights.")
         except:
             report += "AI insights unavailable."
             
@@ -280,6 +319,7 @@ class CausalInferenceAgent:
         self.llm = llm
     
     def analyze(self, df, treatment, outcome):
+        logger.log("Causal Agent", f"Analyzing causation: {treatment} -> {outcome}")
         try:
             if treatment not in df.columns or outcome not in df.columns:
                 return "Columns not found in dataset."
@@ -292,6 +332,7 @@ class BusinessDecisionAgent:
         self.llm = llm
     
     def advise(self, question, context):
+        logger.log("Advisor Agent", f"Analyzing business question: {question}")
         prompt = f"Act as CEO advisor.\nQuestion: {question}\nContext: {context}\nProvide: Recommendation, Pros, Cons."
         try: return self.llm.generate_content(prompt).text
         except: return "Advice unavailable."
@@ -301,6 +342,7 @@ class NLQueryAgent:
         self.llm = llm
     
     def query_to_code(self, question, df_info):
+        logger.log("NL Query Agent", f"Translating question to code: {question}")
         prompt = f"Convert to Python pandas code (use 'df').\nQuestion: {question}\nInfo: {df_info}\nReturn ONLY code expression (e.g. df.head()). Do not use print()."
         try: 
             return self.llm.generate_content(prompt).text.strip().replace("```python", "").replace("```", "").strip()
@@ -312,6 +354,7 @@ class SQLGeneratorAgent:
         self.llm = llm
     
     def generate_sql(self, question, schema):
+        logger.log("SQL Agent", f"Generating SQL for: {question}")
         prompt = f"Generate SQL query.\nQuestion: {question}\nSchema: {schema}\nReturn ONLY SQL."
         try: return self.llm.generate_content(prompt).text.strip().replace("```sql", "").replace("```", "").strip()
         except: return "SELECT * FROM table"
@@ -321,6 +364,7 @@ class TextAnalyticsAgent:
         self.llm = llm
     
     def analyze_sentiment(self, text_series):
+        logger.log("Text Agent", "Analyzing sentiment...")
         try:
             sentiments = [TextBlob(str(t)).sentiment.polarity for t in text_series[:100] if pd.notna(t)]
             avg = np.mean(sentiments) if sentiments else 0
@@ -622,11 +666,22 @@ with gr.Blocks(css=CSS, title="AIDA: AI Data Automation", theme=gr.themes.Soft()
                 gr.Markdown("### 📦 Session Export\nDownload everything generated in this session (Cleaned Data, Models, Reports) in one ZIP file.")
                 export_btn = gr.Button("Generate Rich Export Bundle", variant="primary")
                 export_file = gr.File(label="Download ZIP")
+            
+            # 6. OBSERVABILITY
+            with gr.Tab("Agent Logs"):
+                gr.Markdown("### 🧠 Agent Thought Process\nReal-time logs of agent reasoning, debugging, and execution.")
+                log_box = gr.Textbox(label="System Logs", lines=20, max_lines=20, interactive=False)
+                refresh_logs = gr.Timer(2)
         
         gr.HTML('<div class="footer">AIDA | Krish J 2025</div>')
 
     # LOGIC
     launch_btn.click(lambda: (gr.update(visible=False), gr.update(visible=True)), outputs=[landing, app])
+    
+    # Log Refresher
+    def update_logs():
+        return logger.get_logs()
+    refresh_logs.tick(update_logs, outputs=[log_box])
     
     def verify_connection(key):
         if len(key) < 30: return gr.update(placeholder="Paste Key & Press Enter to Connect")
