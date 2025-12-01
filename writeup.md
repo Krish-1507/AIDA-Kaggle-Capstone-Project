@@ -41,11 +41,15 @@ AIDA reduces the time-to-insight from hours to minutes while maintaining statist
 
 Core to AIDA is the **multi-agent orchestration system**—not a monolithic application but an ecosystem of specialized agents, each contributing to a different stage of the data science workflow. This modular approach allows for sophisticated coordination and robust error handling.
 
+![AIDA Workflow](assets/AIDA_Workflow.png)
+
 ### The Agent Ecosystem
 
 **1. System Orchestrator: API Configuration & Model Selection**
 
 The entry point to AIDA is the `configure_api` function, which implements dynamic model discovery. Rather than hardcoding a single Gemini model (which fails if unavailable), it queries the API for all accessible models, filters for those supporting `generateContent`, and selects the best available option from a priority list (`gemini-1.5-flash`, `gemini-1.5-pro`, `gemini-pro`). This ensures maximum compatibility across different API key permissions.
+
+![AIDA Architecture](assets/AIDA_Architecture.png)
 
 **2. Self-Healing Agent: Code Execution with Automatic Debugging**
 

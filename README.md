@@ -25,6 +25,8 @@ Traditional analytics tools have three major flaws:
 ## Architecture
 AIDA is built on a modular **Multi-Agent System (MAS)** architecture, where specialized agents collaborate to solve complex problems.
 
+![AIDA Workflow](assets/AIDA_Workflow.png)
+
 ### **The Agentic Workflow**
 1.  **Router Agent:** Analyzes the user request and dispatches it to the appropriate specialist (e.g., Hypothesis Engine vs. Causal Agent).
 2.  **Worker Agents:**
