@@ -9,19 +9,6 @@ This project contains the core logic for **AIDA (AI Data Automation)**, a sophis
 
 ---
 
-## Problem Statement
-
-Data-driven decision making is critical for modern enterprises, yet remains inaccessible to most business users. The traditional workflow requires a team of specialists: data engineers to clean datasets, statisticians to validate hypotheses, data scientists to build models, and business analysts to interpret results. This creates three fundamental problems:
-
-**High Technical Barrier:** Extracting insights from raw data requires proficiency in Python, SQL, and statistical methods. Non-technical stakeholders—the very people making strategic decisions—are locked out of the analysis process.
-
-**Static Analysis:** Traditional BI dashboards show *what* happened but fail to answer *why* it happened or *what to do next*. They present correlations without testing causation, leaving critical business questions unanswered.
-
-**Hallucination Risk:** While LLMs can generate code, they frequently produce broken scripts or fabricate data patterns. Without validation mechanisms, these errors propagate into business decisions, creating costly mistakes.
-
-The manual alternative is equally problematic. A typical analysis workflow—uploading data, cleaning it, running statistical tests, training models, and generating reports—consumes 6-10 hours per dataset. This doesn't scale when business questions multiply.
-
----
 
 ## Solution Statement
 

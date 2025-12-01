@@ -85,7 +85,7 @@ AIDA successfully automated the entire workflow in **under 3 minutes**:
 
 ## Demo
 Watch AIDA in action:
-**[Link to Video Demo]** *(Insert your video link here)*
+**[Watch the Full Demo on YouTube](https://www.youtube.com/watch?v=pDnLoJg8u9U)**
 
 The demo showcases:
 1.  **Real-time Data Ingestion & Cleaning.**
