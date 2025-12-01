@@ -3,6 +3,8 @@
 
 **AIDA** is a cutting-edge **Multi-Agent System (MAS)** designed to democratize advanced data analytics. Built for the **Kaggle AI Agents Intensive Capstone**, it leverages a "Council of Agents" architecture to perform end-to-end data science tasks—from ingestion and cleaning to complex modeling and strategic decision-making—without requiring a single line of code.
 
+👉 **[Read the Official Kaggle Writeup](https://www.kaggle.com/competitions/agents-intensive-capstone-project/writeups/aida-the-enterprise-grade-autonomous-data-science)**
+
 ---
 
 ## Motivation

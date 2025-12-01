@@ -168,4 +168,5 @@ This is a compelling demonstration of how multi-agent systems, built with framew
 
 **Author:** Krish J  
 **Track:** Enterprise Agents  
-**GitHub:** https://github.com/Krish-1507/AIDA-Kaggle-Capstone-Project
+**GitHub:** https://github.com/Krish-1507/AIDA-Kaggle-Capstone-Project  
+**Kaggle Writeup:** https://www.kaggle.com/competitions/agents-intensive-capstone-project/writeups/aida-the-enterprise-grade-autonomous-data-science
