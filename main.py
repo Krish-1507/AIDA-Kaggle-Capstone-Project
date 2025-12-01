@@ -1,6 +1,3 @@
-# AIDA v20.0 - FINAL SUBMISSION MASTERPIECE
-# 42+ Features + Universal API + Professional Documentation
-
 import gradio as gr
 import pandas as pd
 import numpy as np
@@ -51,9 +48,6 @@ ICONS = {
 
 warnings.filterwarnings('ignore')
 
-# ============================================================================
-# 🧠 UNIVERSAL API CONNECTIVITY (DEBUGGED)
-# ============================================================================
 
 # --- OBSERVABILITY LAYER ---
 class AgentLogger:
